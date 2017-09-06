@@ -13,7 +13,7 @@
 	<script type="text/javascript" src="../../build/jsmodeler.ext.svgtomodel.js"></script>
 	<script type="text/javascript" src="../../build/three.min.js"></script>
 	<script type="text/javascript" src="../../build/jsmodeler.ext.three.js"></script>
-	<title>JSModeler SVGToModel</title>
+	<title>SVG 2D To 3D With JSModeler</title>
 	<script type="text/javascript">
 		function Load ()
 		{
@@ -28,8 +28,6 @@
 
 			var svgObject = document.getElementById ('svgid');
 			var modelAndMaterials = JSM.SvgToModel (svgObject, 8, 5, null);
-		<title>SVG 2D To 3D With JSModeler</title>
-		<script type="text/javascript">
 			function jsonp(url, callback) {
 			    var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
 			    window[callbackName] = function(data) {
