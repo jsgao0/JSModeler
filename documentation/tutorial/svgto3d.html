@@ -1,5 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
-	 "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE>
 
 <html>
 
@@ -15,33 +14,7 @@
 	<script type="text/javascript" src="../../build/jsmodeler.ext.three.js"></script>
 	<title>SVG 2D To 3D With JSModeler</title>
 	<script type="text/javascript">
-		function Load ()
-		{
-			var viewerSettings = {
-				cameraEyePosition : [-2.0, -1.5, 1.0],
-				cameraCenterPosition : [0.0, 0.0, 0.0],
-				cameraUpVector : [0.0, 0.0, 1.0]
-			};
-
-			var viewer = new JSM.ThreeViewer ();
-			viewer.Start (document.getElementById ('example'), viewerSettings);
-
-			var svgObject = document.getElementById ('svgid');
-			var modelAndMaterials = JSM.SvgToModel (svgObject, 8, 5, null);
-			function jsonp(url, callback) {
-			    var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-			    window[callbackName] = function(data) {
-			        callback(data);
-			        delete window[callbackName];
-			        document.body.removeChild(script);
-			    };
-			    var script = document.createElement('script');
-			    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-			    document.body.appendChild(script);
-			}
-
-			function Load(path)
-			{
+			function Load(path) {
 				var viewerSettings = {
 					cameraEyePosition : [-3.0, 3.0, 0],
 					cameraCenterPosition : [0.0, 0.0, 0.0],
@@ -59,8 +32,8 @@
 				var meshes = JSM.ConvertModelToThreeMeshes (model, materials);
 				viewer.AddMeshes (meshes);
 
-				viewer.FitInWindow ();
-				viewer.Draw ();
+				viewer.FitInWindow();
+				viewer.Draw();
 			}
 
 			function getParameterByName(name, url) {
@@ -76,16 +49,44 @@
 			function hideLoader() {
 				document.getElementById("loader").style.display = 'none';
 			}
+
+			var loadJSONP = (function(){
+				var unique = 0;
+				return function(url, callback, context) {
+					// INIT
+					var name = "_jsonp_" + unique++;
+					if (url.match(/\?/)) url += "&callback="+name;
+					else url += "?callback="+name;
+					
+					// Create script
+					var script = document.createElement('script');
+					script.type = 'text/javascript';
+					script.src = url;
+					
+					// Setup handler
+					window[name] = function(data){
+						callback.call((context || window), data);
+						document.getElementsByTagName('head')[0].removeChild(script);
+						script = null;
+						delete window[name];
+					};
+					
+					// Load JSON
+					document.getElementsByTagName('head')[0].appendChild(script);
+				};
+			})();
+
+			function jsonpCallback(data) {
+
+			}
 		
-		    window.onload = function ()
-			{
-				var ch = getParameterByName('char');
-				jsonp('https://jsgao0-3d-font-feeder.herokuapp.com/getGlyfPathByChar/msjh/' + ch, function(data) {
-					var path = data.glyfPath;
-					Load(path);
-					hideLoader();
-				});
-							
+			window.onload = function() {
+					var ch = getParameterByName('char');
+					loadJSONP('https://jsgao0-3d-font-feeder.herokuapp.com/getGlyfPathByChar/msjh/' + ch, function(data) {
+						var path = data.glyfPath;
+						Load(path);
+						hideLoader();
+					});		
 			}
 		</script>
 		<style type="text/css">
